@@ -1,14 +1,15 @@
 import boto3
 
+instance_id = input("Enter the instance ID: ")
+
+
 ec2 = boto3.resource('ec2', region_name="eu-central-1")
 
-instance = ec2.Instance('i-0473e3ad4cbec0e43')
+instance = ec2.Instance(instance_id)
 
 
 instance_type = instance.instance_type
-security_group = instance.security_groups.first
-print(security_group)
-
+security_group = instance.security_groups[0]['GroupName']
 
 for volume in instance.volumes.all():
     volume_size = volume.size
@@ -40,9 +41,13 @@ new_instance = ec2.create_instances(
         MinCount=1,
         MaxCount=1,
         SecurityGroups=[security_group],
+        ImageId=image_id,
         )
 
 print("Creating Instance")
 
-new_instance.wait_until_running()
+
+ami = ec2.Image(image_id)
+ami.deregister
+
 print("done")
