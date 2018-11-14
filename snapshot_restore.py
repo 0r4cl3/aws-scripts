@@ -14,17 +14,12 @@ ec2 = boto3.resource('ec2', region_name="eu-central-1")
 snapshot = ec2.Snapshot(snapshot_id) 
 
 #defining variables from old volumes and instances to be used with new instance
-old_volume_id = snapshot.volume_id
-old_volume = ec2.Volume(old_volume_id)
-old_volume_size = old_volume.size
-old_volume_type = old_volume.volume_type
+old_volume = ec2.Volume(snapshot.volume_id)
 old_instance_id = old_volume.attachments[0]['InstanceId']
 old_instance = ec2.Instance(old_instance_id)
-old_instance_type = old_instance.instance_type
-key_pair_name = old_instance.key_pair.name
-security_group = []
-for iterator in old_instance.security_groups:
-    security_group.append(iterator['GroupName'])
+security_groups = []
+for security_group in old_instance.security_groups:
+    security_groups.append(security_group['GroupName'])
 
 
 image = ec2.register_image(
@@ -50,22 +45,20 @@ image.wait_until_exists(
             }],
     )
 
-image_id = image.image_id
-
 instance = ec2.create_instances(
         BlockDeviceMappings=[{
             'DeviceName':'xvda',
             'Ebs': {
-                'VolumeSize': old_volume_size,
-                'VolumeType': old_volume_type,
+                'VolumeSize': old_volume.size,
+                'VolumeType': old_volume.volume_type,
                 },
             }],
-        InstanceType=old_instance_type,
+        InstanceType=old_instance.instance_type,
         MinCount=1,
         MaxCount=1,
-        SecurityGroups=security_group,
-        ImageId=image_id,
-        KeyName=key_pair_name,
+        SecurityGroups=security_groups,
+        ImageId=image.image_id,
+        KeyName=old_instance.key_pair.name,
         TagSpecifications=[
             {
                 'ResourceType': 'instance', 
@@ -84,7 +77,7 @@ instance = ec2.Instance(instance[0].id)
 instance.wait_until_running()
 
 print("Deregistering Image...")
-ami = ec2.Image(image_id)
+ami = ec2.Image(image.image_id)
 ami.deregister()
 
 print("The new instance has been created")
