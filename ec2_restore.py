@@ -62,6 +62,6 @@ new_instance = ec2.Instance(new_instance[0].id)
 new_instance.wait_until_running()
 
 ami = ec2.Image(image_id)
-ami.deregister
+ami.deregister()
 
 print("The new instance has been created")
