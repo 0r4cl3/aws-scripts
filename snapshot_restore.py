@@ -22,6 +22,7 @@ old_volume_type = old_volume.volume_type
 old_instance_id = old_volume.attachments[0]['InstanceId']
 old_instance = ec2.Instance(old_instance_id)
 old_instance_type = old_instance.instance_type
+key_pair_name = old_instance.key_pair.name
 security_group = []
 for iterator in old_instance.security_groups:
     security_group.append(iterator['GroupName'])
@@ -65,6 +66,7 @@ instance = ec2.create_instances(
         MaxCount=1,
         SecurityGroups=security_group,
         ImageId=image_id,
+        KeyName=key_pair_name,
         TagSpecifications=[
             {
                 'ResourceType': 'instance', 
@@ -84,6 +86,6 @@ instance.wait_until_running()
 
 print("Deregistering Image...")
 ami = ec2.Image(image_id)
-ami.deregister
+ami.deregister()
 
 print("The new instance has been created")
