@@ -1,3 +1,4 @@
 #Ingore all vim swap files
 *.sw*
 
+test.py
