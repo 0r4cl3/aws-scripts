@@ -3,9 +3,8 @@
 #Description: The script asks for a snapshot id an recreate an
 #             instance using the same paramenters associated with 
 #             the old instance
-#Author       :Luca Licheri
+#Author:      Luca Licheri
 ###################################################################
-
 import boto3
 
 snapshot_id = input("Enter the snapshot ID: ")
@@ -14,7 +13,7 @@ ec2 = boto3.resource('ec2', region_name="eu-central-1")
 
 snapshot = ec2.Snapshot(snapshot_id) 
 
-#defining variables from old volumes and instances to be used with new isntance
+#defining variables from old volumes and instances to be used with new instance
 old_volume_id = snapshot.volume_id
 old_volume = ec2.Volume(old_volume_id)
 old_volume_size = old_volume.size
