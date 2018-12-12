@@ -9,7 +9,7 @@ import boto3
 
 snapshot_id = input("Enter the snapshot ID: ")
 
-ec2 = boto3.resource('ec2', region_name="eu-central-1")
+ec2 = boto3.resource('ec2', region_name="eu-west-2")
 
 snapshot = ec2.Snapshot(snapshot_id) 
 
