@@ -6,6 +6,7 @@
 import boto3
 
 ec2 = boto3.resource('ec2', region_name='eu-west-2')
+client = boto3.client('ec2', region_name="eu-central-1")
 
 client_name = input('Enter the client name: ')
 
