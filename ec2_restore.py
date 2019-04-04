@@ -1,5 +1,5 @@
 ###################################################################
-#Script Name: AWS EC2 restore                                                                                             
+#Script Name: AWS EC2 restore 
 #Description: The script asks for an Instance id an recreate it
 #             using the same paramenters associated with 
 #             the old instance

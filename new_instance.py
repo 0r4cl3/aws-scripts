@@ -1,12 +1,13 @@
 ###################################################################
 #Script Name: AWS Image Creating
-#Description: The creates an new Instance and associate an ElasticIP
+#Description: The script creates an new Instance and associate an 
+#             ElasticIP
 #Author:      Luca Licheri
 ###################################################################
 import boto3
 
 ec2 = boto3.resource('ec2', region_name='eu-west-2')
-client = boto3.client('ec2', region_name="eu-central-1")
+client = boto3.client('ec2', region_name="eu-west-2")
 
 client_name = input('Enter the client name: ')
 
@@ -54,5 +55,16 @@ association = client.associate_address(
         AllocationId = eip['AllocationId'],
         InstanceId = instance.id
         )
-
+print('Assigning Tags...')
+client.create_tags(
+        Resources=[
+            eip['AllocationId'],
+            ],
+        Tags=[
+            {
+                'Key': 'Name',
+                'Value': client_name,
+                },
+            ],
+        )
 print(str(instance.id) + ' ready')
