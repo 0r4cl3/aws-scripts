@@ -9,7 +9,7 @@ import boto3
 
 instance_id = input("Enter the instance ID: ")
 
-ec2 = boto3.resource('ec2', region_name="eu-central-1")
+ec2 = boto3.resource('ec2', region_name="eu-west-2")
 
 instance = ec2.Instance(instance_id)
 
@@ -50,13 +50,7 @@ new_instance = ec2.create_instances(
         TagSpecifications=[
             {
                 'ResourceType': 'instance', 
-                'Tags': [
-                    {
-                        'Key': 'Name',
-                        'Value': 'New Instance automatically create'
-                        },
-                    ]
-                },
+                'Tags': instance.tags                },
             ],
         )
 
