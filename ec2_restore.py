@@ -54,9 +54,13 @@ new_instance = ec2.create_instances(
             ],
         )
 
+
 print("Creating Instance...")
 new_instance = ec2.Instance(new_instance[0].id)
 new_instance.wait_until_running()
+
+for volume in instance.volumes.all():
+    volume.create_tags(Tags=instance.tags)
 
 ami = ec2.Image(image.image_id)
 ami.deregister()

@@ -11,12 +11,13 @@ client = boto3.client('ec2', region_name="eu-west-2")
 
 client_name = input('Enter the client name: ')
 
+tags = [{'Key': 'Name', 'Value': client_name}]
 instance = ec2.create_instances(
         BlockDeviceMappings=[{
             'DeviceName':'xvda',
             'Ebs': {
                 'VolumeSize': 30,
-                'VolumeType': 'standard',
+                'VolumeType': 'gp2',
                 },
             }],
         InstanceType= 't2.small',
@@ -28,12 +29,7 @@ instance = ec2.create_instances(
         TagSpecifications=[
             {
                 'ResourceType': 'instance', 
-                'Tags': [
-                    {
-                        'Key': 'Name',
-                        'Value': client_name,
-                        },
-                    ]
+                'Tags': tags
                 },
             ],
         )
@@ -42,6 +38,9 @@ instance = ec2.create_instances(
 print('Creating Instance...')
 instance = ec2.Instance(instance[0].id)
 instance.wait_until_running()
+
+for volume in instance.volumes.all():
+    volume.create_tags(Tags=tags)
 
 print("Insatnce created.")
 
