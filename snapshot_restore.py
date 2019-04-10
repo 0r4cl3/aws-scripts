@@ -62,12 +62,7 @@ instance = ec2.create_instances(
         TagSpecifications=[
             {
                 'ResourceType': 'instance', 
-                'Tags': [
-                    {
-                        'Key': 'Name',
-                        'Value': 'New Instance automatically create'
-                        },
-                    ]
+                'Tags': old_instance.tags
                 },
             ],
         )
@@ -75,6 +70,9 @@ instance = ec2.create_instances(
 print("Creating Instance...")
 instance = ec2.Instance(instance[0].id)
 instance.wait_until_running()
+
+for volume in instance.volumes.all():
+    volume.create_tags(Tags=old_instance.tags)
 
 print("Deregistering Image...")
 ami = ec2.Image(image.image_id)
